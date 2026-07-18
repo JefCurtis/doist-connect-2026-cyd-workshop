@@ -49,15 +49,19 @@ If `pio` is not found in your normal terminal, use the PlatformIO terminal insid
 
 ## macOS
 
-[WhatCable](https://www.whatcable.uk/) is a Mac app that shows what kind of USB connection macOS detects. For this workshop, it provides a quick way to confirm that your cable carries data instead of only supplying power. It is not being used to test transfer speed.
+[WhatCable](https://www.whatcable.uk/) is optional. It is a useful Mac app for identifying the capabilities of the USB cable and connection you are using. For this workshop, it can help confirm that macOS detects a data device instead of a power-only connection. PlatformIO seeing the CYD serial port is still the definitive check.
 
-1. Install WhatCable.
-2. Connect the CYD with the cable you will bring.
-3. In WhatCable, look under **Connected devices**.
-4. Confirm it shows **USB Serial, Full Speed (12 Mbps)**.
-5. Ignore the "slow USB device or charge-only cable" headline when USB Serial is listed. The CH340 is intentionally a low-bandwidth serial device.
-6. Run `pio device list` and confirm a port similar to `/dev/cu.usbserial-10` appears.
-7. If no USB serial port appears, install the [CH340 driver](https://learn.sparkfun.com/tutorials/how-to-install-ch340-drivers/all), restart, and test again.
+Optional WhatCable check:
+
+1. Install WhatCable and connect the CYD with the cable you will bring.
+2. Look under **Connected devices**.
+3. Confirm it shows **USB Serial, Full Speed (12 Mbps)**.
+4. Ignore the "slow USB device or charge-only cable" headline when USB Serial is listed. The CH340 is intentionally a low-bandwidth serial device.
+
+Required check with or without WhatCable:
+
+1. Run `pio device list` and confirm a port similar to `/dev/cu.usbserial-10` appears.
+2. If no USB serial port appears, install the [CH340 driver](https://learn.sparkfun.com/tutorials/how-to-install-ch340-drivers/all), restart, and test again.
 
 A charge-only cable may power the screen while providing no serial port. Power alone is not proof that the cable works.
 

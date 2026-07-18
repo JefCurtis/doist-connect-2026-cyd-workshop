@@ -18,7 +18,7 @@ Setup time is not included in the workshop hour. Complete every item in [PREWORK
 - [ ] Tap Quest appears on the device and responds to touch
 - [ ] A project idea described as "When ___ happens, the device should ___", or a plan to continue with [ChoreQuest](https://github.com/JefCurtis/chorequest)
 
-Mac users must also install [WhatCable](https://www.whatcable.uk/). When the CYD is attached, **Connected devices: USB Serial, Full Speed (12 Mbps)** confirms the cable carries data. WhatCable may still call it a slow device because the CH340 serial chip does not need high-speed USB.
+Mac users can optionally install [WhatCable](https://www.whatcable.uk/) to identify the capabilities of the USB cable and connection they are using. When the CYD is attached, **Connected devices: USB Serial, Full Speed (12 Mbps)** confirms that macOS detects a data device. WhatCable may still call it a slow device because the CH340 serial chip does not need high-speed USB. PlatformIO seeing the serial port is the required check.
 
 Run the automated checks from the repository root:
 
