@@ -4,7 +4,7 @@ The starter already works. Your job is to complete the edit, build, upload, test
 
 ## Before the timer starts
 
-- [ ] Complete every item in [PREWORK.md](../PREWORK.md)
+- [ ] Complete every prerequisite in the main [README](../README.md)
 - [ ] Open the repository in VS Code
 - [ ] Connect the CYD with your verified data cable
 - [ ] Confirm `pio device list` shows it

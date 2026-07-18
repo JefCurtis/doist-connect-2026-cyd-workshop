@@ -1,12 +1,14 @@
 ---
 name: cyd-development
-description: Builds, flashes, debugs, and extends firmware for ESP32-2432S028R Cheap Yellow Display devices using PlatformIO, Arduino, LVGL, TFT_eSPI, XPT2046 touch, local storage, WiFi, and HTTP APIs. Use when changing CYD hardware, UI, game logic, persistence, connectivity, or data code, or diagnosing build, upload, display, touch, memory, and network failures.
+description: Builds, flashes, debugs, and extends ESP32-2432S028R firmware using PlatformIO, Arduino, LVGL, TFT_eSPI, XPT2046 touch, storage, WiFi, and HTTP APIs. Use after workshop setup when changing firmware, game behavior, hardware, UI, persistence, connectivity, or data code, or diagnosing build, upload, display, touch, memory, and network failures.
 compatibility: Requires PlatformIO and an ESP32-2432S028R with ILI9341-compatible display and XPT2046 resistive touch.
 ---
 
 # CYD development
 
-## Start every task
+Use `cyd-workshop-init` for one-time laptop and device setup. Use this skill for ongoing firmware work after setup.
+
+## Start every firmware task
 
 1. Read `../../../AGENTS.md`.
 2. Read `../../../docs/ARCHITECTURE.md` and `../../../docs/HARDWARE.md`.

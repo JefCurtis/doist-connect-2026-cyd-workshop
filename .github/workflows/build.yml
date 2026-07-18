@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        environment: [cyd, cyd2usb]
+        environment: [hello-cyd, hello-cyd2usb, cyd, cyd2usb]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

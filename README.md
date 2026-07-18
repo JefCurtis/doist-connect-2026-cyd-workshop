@@ -6,25 +6,62 @@ The starter project is **Tap Quest**, a small whack-a-mole-style game. A target 
 
 ## Prerequisites: complete these before the workshop
 
-Setup time is not included in the workshop hour. Complete every item in [PREWORK.md](PREWORK.md) before arriving.
+The setup skill works on macOS, Windows, and Linux. It checks the attached device, installs missing software with your approval, and flashes a small **Hello, CYD!** screen. Tap Quest is not installed until the workshop.
 
-- [ ] Compatible CYD, or a partner who is bringing one
-- [ ] Laptop with Git, Python 3, PlatformIO, and an editor such as VS Code or Cursor
-- [ ] USB data cable and any adapter your laptop needs
-- [ ] CH340 USB serial driver installed if your computer needs it
-- [ ] Your CYD or your partner's CYD appears as a serial device in PlatformIO
-- [ ] Repository cloned and dependencies downloaded
-- [ ] Both `pio run` and the preflight upload complete successfully on the device you will share
-- [ ] Tap Quest appears on the device and responds to touch
-- [ ] A project idea described as "When ___ happens, the device should ___", or a plan to continue with [ChoreQuest](https://github.com/JefCurtis/chorequest)
+### What you need
 
-Mac users can optionally install [WhatCable](https://www.whatcable.uk/) to identify the capabilities of the USB cable and connection they are using. When the CYD is attached, **Connected devices: USB Serial, Full Speed (12 Mbps)** confirms that macOS detects a data device. WhatCable may still call it a slow device because the CH340 serial chip does not need high-speed USB. PlatformIO seeing the serial port is the required check.
+- ESP32-2432S028R Cheap Yellow Display
+- USB data cable. A charge-only cable may power the screen but cannot connect the device; the setup skill will test this. Mac users can optionally use [WhatCable](https://www.whatcable.uk/) when troubleshooting.
+- Laptop with admin access
+- Git installed
+- An AI coding agent that can read this repository and run terminal commands
 
-Run the automated checks from the repository root:
+The recommended board is this [ESP32 "Bruce" CYD package on AliExpress](https://www.aliexpress.com/item/1005009383089648.html). Similar devices should use an ESP32-2432S028R, 2.8-inch 320x240 ILI9341-compatible display, XPT2046 resistive touch, and 4 MB flash.
+
+### 1. Clone the repository
+
+A simple place to keep the project is your **Documents** folder:
 
 ```bash
-python3 scripts/doctor.py --build
+cd ~/Documents
+git clone https://github.com/JefCurtis/doist-connect-2026-cyd-workshop.git
+cd doist-connect-2026-cyd-workshop
 ```
+
+On Windows PowerShell, use `cd $HOME\Documents` for the first command.
+
+| Command | What it does |
+|---|---|
+| `cd` | Moves the terminal into Documents, then into the downloaded project. |
+| `git clone` | Downloads the workshop game, setup skills, hardware configuration, and documentation. |
+
+### 2. Connect and open the project
+
+1. Plug the CYD into your laptop with the USB cable.
+2. Open the repository folder in Cursor, VS Code, or another AI coding tool.
+3. Start an AI agent that can read files and run terminal commands in this folder.
+
+### 3. Run the setup skill
+
+Run:
+
+```text
+/skill:cyd-workshop-init
+```
+
+The skill checks the attached ESP32 and flash, verifies the serial connection, installs only missing tools with your approval, builds the Hello screen, and asks before flashing it. It uses the model label for display and touch details because those parts cannot identify themselves over USB.
+
+If you prefer to run the instructions manually, use the copyable [AI setup prompt](docs/PREWORK_AGENT.md) or the detailed [command reference](docs/COMMAND_REFERENCE.md).
+
+### You are ready when
+
+- [ ] **Device:** ESP32, 4 MB flash, display, and touch are confirmed
+- [ ] **Connection:** Laptop sees the CYD serial port
+- [ ] **Tools:** Git, Python 3, and PlatformIO are ready
+- [ ] **Build:** Hello firmware compiles successfully
+- [ ] **Screen:** CYD shows “Hello, CYD!” and changes to “Touch works!” when tapped
+
+The first workshop step replaces this Hello screen with Tap Quest.
 
 ## Hardware and software
 
@@ -54,14 +91,12 @@ python3 scripts/doctor.py --build
 
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the complete path from a code edit to a pixel or API response.
 
-## Quick start
+## Workshop quick start: install Tap Quest
+
+After the Hello preflight passes, the workshop begins by replacing it with Tap Quest:
 
 ```bash
-git clone https://github.com/JefCurtis/doist-connect-2026-cyd-workshop.git
-cd doist-connect-2026-cyd-workshop
-pio device list
 pio run -e cyd2usb -t upload
-pio device monitor -b 115200
 ```
 
 `cyd2usb` is the default for newer dual-USB boards. If the colors are inverted, upload the original-board environment instead:
@@ -86,40 +121,37 @@ Uploading replaces whatever firmware is currently installed. You can always rest
 
 The exact exercises and file locations are in [docs/EXERCISES.md](docs/EXERCISES.md).
 
-## What the CYD can do in practical terms
+## What the CYD can do
 
-| Capability | What that means in a real project |
+| Capability | In practice |
 |---|---|
-| 320x240 color touchscreen | Enough room for a focused dashboard, remote control, small game, task list, clock, or status display. Design one clear screen at a time rather than shrinking a desktop interface. |
-| ESP32 processor | Fast enough for responsive menus, touch events, timers, basic animation, game logic, JSON parsing, and background network requests. |
-| WiFi radio | The device can call REST APIs, receive configuration, serve a small local web page, or send scores to a leaderboard. It needs a normal 2.4 GHz network without a browser-based sign-in page. |
-| Bluetooth and ESP-NOW | Projects can act as simple wireless controls or communicate directly with nearby ESP32 devices without normal WiFi infrastructure. |
-| Persistent local storage | Settings and high scores can survive a restart without an SD card or server. Storage is small, so save configuration and state rather than large assets. |
-| microSD slot | Large images, sound files, logs, or game data can live on removable storage instead of consuming firmware flash. |
-| RGB LED, light sensor, and speaker output | The project can react outside the screen with status colors, ambient-light behavior, and optional sound. A speaker is not included on most boards. |
-| Low price and USB power | It is practical to dedicate a device to one purpose, leave it on a desk, or give one to every workshop attendee. |
+| 320x240 touchscreen | Build a focused game, task list, remote, clock, or status screen. |
+| ESP32 processor | Run responsive UI, timers, simple animation, game logic, and JSON parsing. |
+| WiFi | Call APIs, fetch data, or send scores over a normal 2.4 GHz network. |
+| Bluetooth and ESP-NOW | Control nearby devices or communicate directly with another ESP32. |
+| Local storage and microSD | Save settings and scores internally, or keep larger assets on a card. |
+| LED, light sensor, and speaker output | Add color, ambient-light behavior, and optional sound. |
 
-## Where the CYD is constrained in practical terms
+## A few practical limits
 
-| Constraint | What it means in a real project | How this starter handles it |
-|---|---|---|
-| 4 MB flash | Flash is the device's disk, not its working memory. The default partition gives this firmware about 1.3 MB for compiled code. Fonts, image arrays, libraries, and TLS code consume it quickly. Large media belongs on microSD, and unused features should stay out of the build. | The initial Tap Quest build is roughly 591 KB, leaving useful space for exercises. |
-| No PSRAM | There is no large external working-memory chip. PlatformIO exposes about 320 KB of application RAM. One 320x240 RGB565 framebuffer needs 153,600 bytes. Two need 307,200 bytes, before LVGL, WiFi, or your game allocate anything. | LVGL renders through a 20-row, 12,800-byte partial buffer instead of holding the whole screen twice. |
-| SPI display, no GPU | Every changed pixel travels over a serial bus. Menus and small animations feel good, but desktop-style effects, video, and frequent full-screen redraws will stutter or consume the processor. | Only the timer, score, and target change during play. |
-| Resistive single-touch input | Touch is pressure-based, less precise than a phone, and cannot do multitouch gestures. Tiny controls and gesture-heavy games are frustrating. | The target starts at 58 pixels and never shrinks below 30 pixels. |
-| WiFi shares limited RAM | HTTPS certificates, sockets, and JSON can consume a large part of the free heap. Blocking API calls can also freeze touch handling. | The base game is offline. Network work is a separate stretch goal and must not run inside an LVGL event callback. |
-| Few free GPIO pins | The display, touch, SD card, LED, light sensor, and backlight already use most pins. Only a few pins are easily available for sensors. | Exercises use hardware already on the board. External add-ons are optional. |
-| Board variants | Boards sold under similar names can invert colors or use a different display or touch controller. One firmware configuration will not fix every clone. | PlatformIO includes `cyd` and `cyd2usb` environments. The workshop supports ILI9341 plus XPT2046 boards. |
-| USB serial bridge | The classic ESP32 does not provide native USB here. A CH340 chip and working driver create the serial port used for flashing. | Pre-work verifies the cable, driver, serial port, and first upload. |
+| Limit | In practice |
+|---|---|
+| 4 MB flash | The default app partition is about 1.3 MB. Tap Quest uses about 591 KB, so large images and sound belong on microSD. |
+| About 320 KB RAM and no PSRAM | There is not enough memory for multiple full-screen buffers. This project renders 20 rows at a time instead. |
+| SPI display, no GPU | Buttons and small animations work well. Video and constant full-screen animation do not. |
+| Resistive single-touch screen | Use larger controls. Multitouch and phone-style gestures are not available. |
+| WiFi uses extra memory | Keep an offline mode and avoid blocking the touch interface during API calls. |
+| Limited free pins and board variants | Prefer built-in hardware and use the matching `cyd` or `cyd2usb` configuration. |
 
 ## How the code is separated
 
 ```text
 src/
 ├── main.cpp                   setup and main loop
-├── hardware/                  display, touch, and RGB LED
-├── game/                      rules and game state
-├── ui/                        LVGL screens and events
+├── hardware/                  shared display, touch, and RGB LED
+├── preflight/                 Hello CYD setup screen
+├── game/                      Tap Quest rules and game state
+├── ui/                        Tap Quest LVGL screens and events
 └── data/                      persistent high-score storage
 ```
 
@@ -131,16 +163,20 @@ Start with the progressive tasks in [docs/EXERCISES.md](docs/EXERCISES.md). Stre
 
 ## Working with an AI coding agent
 
-The repository includes two options:
+The repository includes two project-local skills following the [Agent Skills standard](https://agentskills.io/specification):
 
-- `.agents/skills/cyd-development/SKILL.md` is a project-local skill following the [Agent Skills standard](https://agentskills.io/specification).
-- [docs/AGENT_PROMPT.md](docs/AGENT_PROMPT.md) is a fallback prompt for tools that do not load skills.
+- `cyd-workshop-init` handles one-time setup on macOS, Windows, or Linux. It checks the attached device, installs missing tools with approval, and installs the Hello test firmware.
+- `cyd-development` is used afterward for game changes, LVGL work, hardware features, troubleshooting, networking, and API stretch goals.
 
-The skill teaches the agent the board variant, pin assignments, memory limits, architecture boundaries, safe build process, and common display and touch failures.
+Compatible agents discover `cyd-development` automatically when a request matches its description, so attendees do not need to run it manually. Its hardware rules and workflows apply beyond Tap Quest to other CYD projects built from this repository.
+
+[docs/AGENT_PROMPT.md](docs/AGENT_PROMPT.md) contains fallback instructions for tools that do not load skills.
 
 ## Troubleshooting and references
 
-- [Pre-work and prerequisites](PREWORK.md)
+- [AI-guided setup prompt](docs/PREWORK_AGENT.md)
+- [Device compatibility rules](docs/DEVICE_COMPATIBILITY.md)
+- [Manual command reference](docs/COMMAND_REFERENCE.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [Hardware and practical limits](docs/HARDWARE.md)
 - [Exercises and stretch goals](docs/EXERCISES.md)

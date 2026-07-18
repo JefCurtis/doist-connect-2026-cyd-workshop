@@ -1,5 +1,7 @@
 # CYD workshop agent guidance
 
+Use `.agents/skills/cyd-workshop-init/SKILL.md` for one-time laptop and device setup. Use `.agents/skills/cyd-development/SKILL.md` for ongoing firmware work.
+
 Read these before changing firmware:
 
 - `README.md`

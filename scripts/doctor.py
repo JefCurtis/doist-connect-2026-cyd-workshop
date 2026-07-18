@@ -45,16 +45,18 @@ def check_platformio_project() -> bool:
     return result(path.exists(), "PlatformIO project", str(path))
 
 
-def check_device() -> bool:
+def check_device() -> tuple[bool, str | None]:
     completed = run(["pio", "device", "list", "--json-output"])
     if completed.returncode != 0:
         detail = (completed.stderr or completed.stdout).strip()
-        return result(False, "CYD serial device", detail or "device scan failed")
+        result(False, "CYD serial device", detail or "device scan failed")
+        return False, None
 
     try:
         devices = json.loads(completed.stdout)
     except json.JSONDecodeError:
-        return result(False, "CYD serial device", "PlatformIO returned invalid JSON")
+        result(False, "CYD serial device", "PlatformIO returned invalid JSON")
+        return False, None
 
     matches = []
     for device in devices:
@@ -64,13 +66,44 @@ def check_device() -> bool:
 
     if not matches:
         visible = ", ".join(device.get("port", "unknown") for device in devices)
-        return result(
+        result(
             False,
             "CYD serial device",
             f"no CH340 USB serial device found; visible ports: {visible or 'none'}",
         )
+        return False, None
 
-    return result(True, "CYD serial device", ", ".join(matches))
+    result(True, "CYD serial device", ", ".join(matches))
+    return True, matches[0]
+
+
+def check_hardware_identity(port: str) -> bool:
+    info = run(["pio", "system", "info", "--json-output"])
+    if info.returncode != 0:
+        return result(False, "ESP32 hardware", "could not read PlatformIO paths")
+
+    try:
+        values = json.loads(info.stdout)
+        core_dir = Path(values["core_dir"]["value"])
+        python_exe = values["python_exe"]["value"]
+    except (json.JSONDecodeError, KeyError, TypeError):
+        return result(False, "ESP32 hardware", "PlatformIO returned incomplete system information")
+
+    esptool = core_dir / "packages" / "tool-esptoolpy" / "esptool.py"
+    if not esptool.exists():
+        return result(False, "ESP32 hardware", "esptool is missing; run the build first")
+
+    completed = run([python_exe, str(esptool), "--port", port, "flash_id"], timeout=60)
+    output = completed.stdout + completed.stderr
+    if completed.returncode != 0:
+        return result(False, "ESP32 hardware", "could not query the attached board")
+
+    chip_line = next((line.strip() for line in output.splitlines() if line.startswith("Chip is ")), "")
+    flash_line = next((line.strip() for line in output.splitlines() if line.startswith("Detected flash size:")), "")
+    chip_ok = "ESP32" in chip_line
+    flash_ok = flash_line.endswith("4MB")
+    detail = f"{chip_line or 'chip unknown'}; {flash_line or 'flash size unknown'}"
+    return result(chip_ok and flash_ok, "ESP32 hardware", detail)
 
 
 def check_build(environment: str) -> bool:
@@ -98,9 +131,9 @@ def main() -> int:
     )
     parser.add_argument(
         "--environment",
-        choices=("cyd", "cyd2usb"),
-        default="cyd2usb",
-        help="PlatformIO environment to compile (default: cyd2usb)",
+        choices=("hello-cyd", "hello-cyd2usb", "cyd", "cyd2usb"),
+        default="hello-cyd2usb",
+        help="PlatformIO environment to compile (default: hello-cyd2usb)",
     )
     args = parser.parse_args()
 
@@ -111,17 +144,24 @@ def main() -> int:
         check_platformio_project(),
     ]
 
+    device_ok = False
+    device_port = None
     if checks[1]:
-        checks.append(check_device())
+        device_ok, device_port = check_device()
+        checks.append(device_ok)
     if args.build and checks[1] and checks[2]:
-        checks.append(check_build(args.environment))
+        build_ok = check_build(args.environment)
+        checks.append(build_ok)
+        if build_ok and device_ok and device_port:
+            checks.append(check_hardware_identity(device_port))
+            print("[INFO] Display and touch: verified after uploading and tapping the Hello CYD test")
 
     print()
     if all(checks):
         print("All requested checks passed.")
         return 0
 
-    print("One or more checks failed. Read PREWORK.md and docs/TROUBLESHOOTING.md.")
+    print("One or more checks failed. Read the README prerequisites and docs/TROUBLESHOOTING.md.")
     return 1
 
 

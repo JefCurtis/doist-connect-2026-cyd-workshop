@@ -1,12 +1,16 @@
 # Fallback AI agent prompt
 
-The repository includes an Agent Skill under `.agents/skills/cyd-development/`. If your coding agent does not discover that skill, paste the prompt below at the start of the session.
+The repository includes an Agent Skill under `.agents/skills/cyd-development/`.
+
+For workshop setup and device review, use [PREWORK_AGENT.md](PREWORK_AGENT.md). It checks compatibility, guides setup one step at a time, and installs only the small Hello test firmware after approval.
+
+For firmware development after setup, paste the prompt below when your coding agent does not discover the skill.
 
 ```text
 You are working on firmware for an ESP32-2432S028R Cheap Yellow Display.
 
 Before editing code:
-1. Read README.md, PREWORK.md, docs/ARCHITECTURE.md, docs/HARDWARE.md, and AGENTS.md.
+1. Read README.md, docs/ARCHITECTURE.md, docs/HARDWARE.md, and AGENTS.md.
 2. Read platformio.ini as the source of truth for the board, drivers, pins, library versions, upload speed, and display variant.
 3. Identify which layers the request touches: hardware, UI, game logic, local data, network, or API data.
 
