@@ -1,0 +1,21 @@
+name: Build firmware
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  platformio:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        environment: [cyd, cyd2usb]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install PlatformIO
+        run: pip install platformio==6.1.19
+      - name: Build ${{ matrix.environment }}
+        run: pio run -e ${{ matrix.environment }}
