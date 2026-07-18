@@ -30,11 +30,6 @@ cd doist-connect-2026-cyd-workshop
 
 On Windows PowerShell, use `cd $HOME\Documents` for the first command.
 
-| Command | What it does |
-|---|---|
-| `cd` | Moves the terminal into Documents, then into the downloaded project. |
-| `git clone` | Downloads the workshop game, setup skills, hardware configuration, and documentation. |
-
 ### 2. Connect and open the project
 
 1. Plug the CYD into your laptop with the USB cable.
@@ -63,49 +58,17 @@ If you prefer to run the instructions manually, use the copyable [AI setup promp
 
 The first workshop step replaces this Hello screen with Tap Quest.
 
-## Hardware and software
+Once onboarding is complete, you can also work directly with [ChoreQuest](https://github.com/JefCurtis/chorequest) instead. It uses the same CYD foundation and adds WiFi, the Todoist API, recurring tasks, rewards, and more complex data handling.
 
-### Hardware
+## Workshop start: install Tap Quest
 
-| Part | What the workshop expects |
-|---|---|
-| CYD | Recommended: [ESP32 "Bruce" package](https://www.aliexpress.com/item/1005009383089648.html). Similar ESP32-2432S028R boards should work when they use an ILI9341-compatible display and XPT2046 resistive touch. |
-| Display | ILI9341-compatible SPI display |
-| Touch | XPT2046 resistive touchscreen |
-| USB | A known data cable, not a charge-only cable |
-| Built in | WiFi, Bluetooth, RGB LED, light sensor, microSD slot |
-| Optional | Small speaker with the correct connector |
+After the Hello preflight passes, tell your AI agent:
 
-### Software
-
-| Tool | Its job |
-|---|---|
-| VS Code, Cursor, or another editor | Edit and navigate the project. The editor is your choice; the workshop uses PlatformIO to build and upload. |
-| Python 3 | Run the optional cross-platform preflight checker |
-| PlatformIO | Download libraries, compile C++, upload firmware, and open the serial monitor |
-| Arduino framework | Provides the ESP32 runtime, timing, storage, WiFi, and hardware APIs |
-| TFT_eSPI | Sends pixel data to the display over SPI |
-| XPT2046_Touchscreen | Reads raw touch coordinates from the touch controller |
-| LVGL 9 | Creates screens, labels, buttons, styles, and touch events |
-| Preferences/NVS | Saves the high score when power is removed |
-
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the complete path from a code edit to a pixel or API response.
-
-## Workshop quick start: install Tap Quest
-
-After the Hello preflight passes, the workshop begins by replacing it with Tap Quest:
-
-```bash
-pio run -e cyd2usb -t upload
+```text
+Replace the Hello test with Tap Quest. Choose the correct board configuration, build it, ask before uploading, and verify that the game starts.
 ```
 
-`cyd2usb` is the default for boards with two physical USB sockets, usually one USB-C and one Micro-USB. If the colors are inverted, upload the original-board environment instead:
-
-```bash
-pio run -e cyd -t upload
-```
-
-Uploading replaces whatever firmware is currently installed. You can always restore another project by uploading it again.
+The agent will use the device information collected during setup, build the correct Tap Quest configuration, and ask before replacing the Hello firmware. If you prefer to run the command yourself, use the [manual command reference](docs/COMMAND_REFERENCE.md).
 
 ## Your one-hour checklist
 
@@ -161,30 +124,21 @@ Future WiFi and API code should go into `src/network/` and `src/data/`, not into
 
 Start with the progressive tasks in [docs/EXERCISES.md](docs/EXERCISES.md). Stretch goals include lives, combos, sound, adaptive difficulty, two-device multiplayer, over-the-air updates, and an API-backed leaderboard. The suggested leaderboard contract is in [docs/LEADERBOARD.md](docs/LEADERBOARD.md).
 
-## Working with an AI coding agent
-
-The repository includes two project-local skills following the [Agent Skills standard](https://agentskills.io/specification):
-
-- `cyd-workshop-init` handles one-time setup on macOS, Windows, or Linux. It checks the attached device, installs missing tools with approval, and installs the Hello test firmware.
-- `cyd-development` is used afterward for game changes, LVGL work, hardware features, troubleshooting, networking, and API stretch goals.
-
-Compatible agents discover `cyd-development` automatically when a request matches its description, so attendees do not need to run it manually. Its hardware rules and workflows apply beyond Tap Quest to other CYD projects built from this repository.
-
-[docs/AGENT_PROMPT.md](docs/AGENT_PROMPT.md) contains fallback instructions for tools that do not load skills.
-
 ## Troubleshooting and references
 
-- [AI-guided setup prompt](docs/PREWORK_AGENT.md)
-- [Device compatibility rules](docs/DEVICE_COMPATIBILITY.md)
-- [Manual command reference](docs/COMMAND_REFERENCE.md)
-- [Architecture](docs/ARCHITECTURE.md)
-- [Hardware and practical limits](docs/HARDWARE.md)
-- [Exercises and stretch goals](docs/EXERCISES.md)
-- [Troubleshooting](docs/TROUBLESHOOTING.md)
-- [CYD community repository](https://github.com/witnessmenow/ESP32-Cheap-Yellow-Display)
-- [Community project gallery](https://github.com/witnessmenow/ESP32-Cheap-Yellow-Display/blob/main/PROJECTS.md)
-- [LVGL documentation](https://docs.lvgl.io/)
-- [PlatformIO documentation](https://docs.platformio.org/)
+| Resource | What it covers |
+|---|---|
+| [AI-guided setup prompt](docs/PREWORK_AGENT.md) | Manual fallback for agents that cannot load the setup skill. |
+| [Device compatibility](docs/DEVICE_COMPATIBILITY.md) | How the attached board and Hello test determine compatibility. |
+| [Command reference](docs/COMMAND_REFERENCE.md) | Plain-English explanations of build and upload commands. |
+| [Architecture](docs/ARCHITECTURE.md) | How PlatformIO, hardware drivers, LVGL, game logic, and data fit together. |
+| [Hardware and limits](docs/HARDWARE.md) | Pins, memory, storage, display, touch, networking, and board variants. |
+| [Exercises](docs/EXERCISES.md) | The one-hour checklist and progressive stretch goals. |
+| [Troubleshooting](docs/TROUBLESHOOTING.md) | Cable, serial, upload, display, touch, build, and WiFi failures. |
+| [CYD community repository](https://github.com/witnessmenow/ESP32-Cheap-Yellow-Display) | Community setup notes, examples, pinouts, and hardware information. |
+| [CYD project gallery](https://github.com/witnessmenow/ESP32-Cheap-Yellow-Display/blob/main/PROJECTS.md) | Examples of what other people have built. |
+| [LVGL documentation](https://docs.lvgl.io/) | UI framework concepts and API reference. |
+| [PlatformIO documentation](https://docs.platformio.org/) | Build, library, environment, upload, and serial-monitor documentation. |
 
 ## License
 
