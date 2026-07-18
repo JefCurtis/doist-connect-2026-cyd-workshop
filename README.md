@@ -49,7 +49,7 @@ Run:
 /skill:cyd-workshop-init
 ```
 
-The skill checks the attached ESP32 and flash, verifies the serial connection, installs only missing tools with your approval, builds the Hello screen, and asks before flashing it. It uses the model label for display and touch details because those parts cannot identify themselves over USB.
+The skill checks the attached ESP32 and flash, verifies the serial connection, installs only missing tools with your approval, builds the Hello screen, and asks before flashing it. It defaults safely to the common dual-USB configuration, then uses the actual screen and touch result to confirm compatibility. A hidden model label does not block setup.
 
 If you prefer to run the instructions manually, use the copyable [AI setup prompt](docs/PREWORK_AGENT.md) or the detailed [command reference](docs/COMMAND_REFERENCE.md).
 
@@ -99,7 +99,7 @@ After the Hello preflight passes, the workshop begins by replacing it with Tap Q
 pio run -e cyd2usb -t upload
 ```
 
-`cyd2usb` is the default for newer dual-USB boards. If the colors are inverted, upload the original-board environment instead:
+`cyd2usb` is the default for boards with two physical USB sockets, usually one USB-C and one Micro-USB. If the colors are inverted, upload the original-board environment instead:
 
 ```bash
 pio run -e cyd -t upload

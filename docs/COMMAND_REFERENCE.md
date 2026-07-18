@@ -83,13 +83,13 @@ This does not upload firmware or change the CYD.
 
 ## Upload the Hello test during setup
 
-Newer dual-USB board:
+Board with two physical USB sockets, normally one USB-C and one Micro-USB:
 
 ```bash
 pio run -e hello-cyd2usb -t upload
 ```
 
-Original single-Micro-USB board:
+Original board with one Micro-USB socket:
 
 ```bash
 pio run -e hello-cyd -t upload
@@ -99,13 +99,13 @@ Use this small test before the workshop. It displays "Hello, CYD!" and confirms 
 
 ## Upload Tap Quest during the workshop
 
-Newer dual-USB board:
+Board with two physical USB sockets, normally one USB-C and one Micro-USB:
 
 ```bash
 pio run -e cyd2usb -t upload
 ```
 
-Original single-Micro-USB board:
+Original board with one Micro-USB socket:
 
 ```bash
 pio run -e cyd -t upload
@@ -114,7 +114,7 @@ pio run -e cyd -t upload
 | Command part | Plain-English meaning |
 |---|---|
 | `pio run` | Run a PlatformIO job for this project. By itself, it compiles. |
-| `-e cyd2usb` | Select the newer dual-USB display configuration. `-e` means environment. |
+| `-e cyd2usb` | Select the display configuration for a board with two physical USB sockets. `-e` means environment. |
 | `-e cyd` | Select the original display configuration. Use only one environment. |
 | `-t upload` | Run the upload target after compiling. This writes firmware to the device. |
 

@@ -1,53 +1,52 @@
 # CYD device compatibility check
 
-Complete this check before uploading the Hello test firmware.
+Do not block setup because a case hides the model label. Use the attached hardware and the Hello test.
 
-## Evidence to collect
+## Before uploading
 
-Automatically inspect the attached device for:
+Automatically check for:
 
 - CH340 USB serial connection
-- ESP32 processor identity
+- ESP32 processor
 - 4 MB flash
 
-Use the exact model printed on the back, a product listing, or a clear label photo to confirm the display and touch specifications. A visible CH340 USB serial port confirms that USB data works, but it does not identify the display or touch controller.
+When all three pass, classify the device as **Likely compatible** and continue building the Hello test. USB cannot identify the display or touch controller, so those are confirmed by the actual screen and tap test.
 
-## Workshop requirements
+## Choosing a Hello configuration
 
-| Part | Required or supported |
+The only difference between the two workshop configurations is display color inversion. Choosing the wrong one will not damage the device.
+
+| Visible USB sockets | Configuration to try first |
 |---|---|
-| Board | ESP32-2432S028R |
-| Screen size | 2.8-inch, 320x240 |
-| Display | ILI9341-compatible |
-| Touch | XPT2046 resistive touch |
-| Flash | 4 MB |
-| Original panel | Supported by PlatformIO environment `cyd` |
-| Dual-USB inverted panel | Supported by PlatformIO environment `cyd2usb` |
+| Two sockets total, normally one USB-C and one Micro-USB | `hello-cyd2usb` |
+| One Micro-USB socket | `hello-cyd` |
+| Unclear or partly hidden by a case | `hello-cyd2usb` |
 
-## Return one result
+If asking about ports, use this exact wording:
 
-### Compatible
+> How many physical USB sockets can you see? Count both USB-C and Micro-USB.
 
-The evidence matches the workshop requirements. Name the evidence and continue to setup.
+This answer is optional and must never block compilation.
 
-### Likely compatible, configuration change needed
+## After uploading
 
-The core hardware matches, but a known setting such as display inversion differs. Explain the setting and ask the attendee to confirm before continuing.
+| Result | Classification and next step |
+|---|---|
+| “Hello, CYD!” appears with normal colors and the button changes to “Touch works!” | **Compatible.** Setup is complete. |
+| Screen and touch work, but colors are inverted | **Supported variant.** Upload the other Hello configuration. |
+| Screen is blank or garbled | **Needs code changes.** The display may use a different controller. |
+| Screen works but touch does not | **Needs code changes.** The touch controller or calibration may differ. |
 
-### Not compatible without code changes
+## Status language
 
-A required component differs, such as capacitive touch or an unsupported display controller. Explain the mismatch and stop the standard setup path.
-
-### Unknown
-
-The listing or photos do not provide enough evidence. Ask for the missing detail and do not guess.
-
-## Response format
-
-Use plain English and one sentence per line:
+Before the Hello upload:
 
 ```text
-Device: Compatible. The listing identifies an ESP32-2432S028R with an ILI9341 display and XPT2046 touch.
-Variant: Use hello-cyd2usb because this board has the supported dual-USB inverted panel.
-Next: Upload the Hello test with approval, then verify the screen and touch.
+Device: Likely, the attached board reports an ESP32 processor and 4 MB flash over a working CH340 serial connection.
+```
+
+After a successful screen and touch test:
+
+```text
+Device: Pass, the Hello screen, colors, and touchscreen all work with the selected configuration.
 ```
