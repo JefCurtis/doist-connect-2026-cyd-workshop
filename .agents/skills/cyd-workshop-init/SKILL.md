@@ -19,6 +19,7 @@ Prepare the attendee for the workshop by installing the small Hello CYD test. Do
 - Ask before uploading the Hello test firmware.
 - Never upload the Tap Quest `cyd` or `cyd2usb` environment during setup.
 - Prefer `pio device list --json-output` for device detection after PlatformIO is available.
+- After the screen and touch pass, save the verified non-secret device details in `.cyd-device.json`. This file is gitignored and helps later agent sessions choose the right build.
 - On macOS, do not use `system_profiler SPUSBDataType` as the deciding check. CH340 devices may be absent there while a working `/dev/cu.usbserial*` port exists.
 
 ## Workflow
@@ -41,7 +42,23 @@ Use `py -3` or `python` on Windows when needed. The default `hello-cyd2usb` buil
 9. Ask permission, then upload `hello-cyd2usb` by default or `hello-cyd` when the attendee has already confirmed one Micro-USB socket.
 10. Ask the attendee to confirm the screen says "Hello, CYD!" and changes to "Touch works!" when tapped. If only the colors are inverted, upload the other Hello environment and test again. A blank or garbled display or failed touch test indicates a different hardware variant that needs code changes.
 11. Follow `../../../docs/DEVICE_COMPATIBILITY.md` and classify the device from the actual Hello screen and touch result.
-12. Return exactly five one-sentence lines. Never return only the result of the most recent step:
+12. Create or update `.cyd-device.json` with this shape, using the environment and port that actually passed. Do not put credentials or WiFi settings in it:
+
+```json
+{
+  "environment": "cyd2usb",
+  "hello_environment": "hello-cyd2usb",
+  "serial_port": "/dev/cu.usbserial-10",
+  "chip": "ESP32",
+  "flash_mb": 4,
+  "display": "verified",
+  "touch": "verified"
+}
+```
+
+Use `cyd` and `hello-cyd` when those were the passing environments. Windows and Linux ports should keep their native format.
+
+13. Return exactly five one-sentence lines. Never return only the result of the most recent step:
 
 ```text
 Device: [Pass after the Hello test, Likely before it, or Blocked after a failed test, plus the detected details.]

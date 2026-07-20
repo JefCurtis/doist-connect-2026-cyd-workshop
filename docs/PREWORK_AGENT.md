@@ -17,6 +17,7 @@ Rules:
 - At every pause and at completion, show all five status lines below. Use Pending or Blocked for unfinished checks.
 - Do not use jargon without explaining it.
 - Ask before uploading the Hello test. Never upload the Tap Quest `cyd` or `cyd2usb` environment during setup.
+- After the physical test passes, save only non-secret device details in the gitignored `.cyd-device.json` file for later agent sessions.
 
 Steps:
 1. Identify the operating system and available package manager.
@@ -31,6 +32,7 @@ Steps:
 10. Ask permission, then upload `hello-cyd2usb` by default or `hello-cyd` when one Micro-USB socket was already confirmed.
 11. Ask the attendee to confirm the screen says "Hello, CYD!" and changes to "Touch works!" when tapped. If only the colors are inverted, upload the other Hello environment and test again.
 12. Follow docs/DEVICE_COMPATIBILITY.md and classify the device from the actual screen and touch result.
+13. Save `.cyd-device.json` with the passing Tap Quest environment (`cyd` or `cyd2usb`), passing Hello environment, current serial port, ESP32 chip, 4 MB flash, and verified display and touch results. Do not include WiFi or credentials.
 
 At every pause and at completion, use exactly this short format with one sentence per line:
 Device: [Pass after the Hello test, Likely before it, or Blocked after a failed test, plus the reason.]

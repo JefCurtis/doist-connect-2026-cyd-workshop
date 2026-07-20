@@ -37,6 +37,8 @@ This answer is optional and must never block compilation.
 | Screen is blank or garbled | **Needs code changes.** The display may use a different controller. |
 | Screen works but touch does not | **Needs code changes.** The touch controller or calibration may differ. |
 
+After a successful test, save the passing Hello and Tap Quest environments, current serial port, chip, flash size, display result, and touch result in the gitignored `.cyd-device.json`. Later agent sessions should trust the tested environment but recheck the serial port before uploading.
+
 ## Status language
 
 Before the Hello upload:
