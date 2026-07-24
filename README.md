@@ -23,6 +23,12 @@ cd cyd
 
 On Windows PowerShell, use `cd $HOME\Documents` for the first command.
 
+If Git is unfamiliar, ask your AI agent:
+
+```text
+Clone https://github.com/JefCurtis/cyd into my Documents folder. When it finishes, tell me how to open the cyd folder as my project.
+```
+
 ### 2. Connect and open the project
 
 1. Plug the CYD into your laptop with the USB cable.
@@ -33,6 +39,14 @@ On Windows PowerShell, use `cd $HOME\Documents` for the first command.
 
 ```text
 /cyd-init
+```
+
+The skill checks before changing anything and asks before installing software or flashing the CYD. It helps install Git, Python 3, and PlatformIO when missing. The first build also downloads the ESP32 compiler and project libraries. It then looks for a connected ESP32 with 4 MB flash, a working screen, and working touch.
+
+If your agent does not recognize `/cyd-init`, tell it:
+
+```text
+Read and follow .agents/skills/cyd-init/SKILL.md
 ```
 
 ### You are ready when

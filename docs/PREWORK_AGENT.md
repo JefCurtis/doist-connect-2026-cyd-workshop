@@ -41,6 +41,9 @@ Tools: [Pass, Pending, or Blocked, plus Git, Python 3, and PlatformIO status.]
 Build: [Pass, Pending, or Blocked, plus Hello build and upload status and memory percentages when known.]
 Ready: [Yes or no, plus the single next action.]
 
+When setup succeeds, use this exact final line:
+Ready: Yes. Tell your agent: "Replace the Hello test with Tap Quest. Choose the correct board configuration, build it, ask before uploading, and verify that the game starts."
+
 If you must pause, complete every other safe check first, show all five lines, and then ask one clear question.
 ```
 

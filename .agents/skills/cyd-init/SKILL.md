@@ -68,6 +68,12 @@ Build: [Pass, Pending, or Blocked, plus whether the Hello firmware compiled and 
 Ready: [Yes or no, plus the single next action.]
 ```
 
+When setup succeeds, use this exact final line:
+
+```text
+Ready: Yes. Tell your agent: "Replace the Hello test with Tap Quest. Choose the correct board configuration, build it, ask before uploading, and verify that the game starts."
+```
+
 If the workflow must pause, complete every other safe check first and then show all five lines before asking one clear question.
 
 For firmware changes after setup, use the separate `cyd-development` skill.

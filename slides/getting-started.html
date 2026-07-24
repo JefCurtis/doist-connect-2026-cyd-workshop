@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>CYD Workshop: Getting started</title>
+  <title>Fun with Hardware · CYD Workshop</title>
   <style>
     :root {
       --bg: #fbfaf8;
@@ -11,8 +11,10 @@
       --muted: #66625e;
       --red: #dc4c3e;
       --yellow: #f5c842;
+      --green: #3a9c68;
       --line: #ddd9d3;
       --code: #efede9;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     * { box-sizing: border-box; }
@@ -22,43 +24,357 @@
       height: 100%;
       margin: 0;
       overflow: hidden;
-      background: var(--bg);
+      background: #202020;
       color: var(--ink);
       font-family: "Avenir Next", Avenir, "Helvetica Neue", Arial, sans-serif;
     }
 
-    body { display: grid; place-items: center; }
+    button, a { font: inherit; }
 
-    .slide {
+    .deck {
+      position: relative;
       width: min(100vw, calc(100vh * 16 / 9));
       aspect-ratio: 16 / 9;
-      padding: 2.8% 6.2% 3.6%;
-      display: grid;
-      grid-template-rows: auto auto auto 1fr;
-      text-align: center;
-      background:
-        linear-gradient(90deg, var(--red) 0 1.1%, transparent 1.1% 100%),
-        var(--bg);
+      margin: auto;
+      overflow: hidden;
+      background: var(--bg);
+      box-shadow: 0 24px 80px rgb(0 0 0 / 35%);
     }
 
-    .kicker {
-      margin: 0 0 0.7%;
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: none;
+      padding: 4.2% 6.2% 4.5%;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    .slide:first-of-type,
+    .slide.active { display: grid; }
+
+    .slide::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 1.1%;
+      background: var(--red);
+    }
+
+    .slide-kicker {
+      margin: 0 0 0.7rem;
       color: var(--red);
-      font-size: clamp(14px, 1.1vw, 23px);
+      font-size: clamp(14px, 1.1vw, 22px);
       font-weight: 700;
       letter-spacing: 0.08em;
       text-transform: uppercase;
     }
 
-    h1 {
+    h1, h2, h3, p { margin-top: 0; }
+
+    h1, h2 {
+      margin-bottom: 0;
+      font-size: clamp(58px, 5vw, 96px);
+      font-weight: 750;
+      line-height: 0.98;
+      letter-spacing: -0.038em;
+      text-wrap: balance;
+    }
+
+    h3 {
+      margin-bottom: 0.5rem;
+      font-size: clamp(25px, 2vw, 40px);
+      line-height: 1.08;
+      letter-spacing: -0.025em;
+    }
+
+    .lede {
+      color: var(--muted);
+      font-size: clamp(20px, 1.65vw, 32px);
+      line-height: 1.35;
+      text-wrap: balance;
+    }
+
+    .slide-index {
+      position: absolute;
+      right: 2.5%;
+      bottom: 2.2%;
+      z-index: 4;
+      color: var(--muted);
+      font-size: clamp(12px, 0.85vw, 17px);
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Welcome */
+    .welcome {
+      place-items: center;
+      text-align: center;
+    }
+
+    .welcome-content {
+      display: grid;
+      justify-items: center;
+      gap: clamp(18px, 2vw, 38px);
+      transform: translateY(-2%);
+    }
+
+    .welcome h1 { font-size: clamp(66px, 6vw, 116px); }
+
+    .welcome .lede {
+      max-width: 31ch;
       margin: 0;
-      font-size: clamp(56px, 6.3vw, 118px);
-      line-height: 1;
-      letter-spacing: -0.035em;
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    .device-mark {
+      width: clamp(190px, 18vw, 350px);
+      height: auto;
+      filter: drop-shadow(0 18px 18px rgb(32 32 32 / 12%));
+    }
+
+    /* ChoreQuest */
+    .chorequest {
+      place-items: center;
+    }
+
+    .media-layout {
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 1.35fr 0.65fr;
+      align-items: center;
+      gap: 5%;
+    }
+
+    .thumbnail-link {
+      display: block;
+      position: relative;
+      border: 2px solid var(--ink);
+      background: var(--ink);
+      color: white;
+      overflow: hidden;
+      border-radius: 8px;
+      box-shadow: 0 20px 38px rgb(32 32 32 / 18%);
+    }
+
+    .thumbnail-link img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .play-badge {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: clamp(64px, 6vw, 112px);
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      border: 3px solid white;
+      border-radius: 50%;
+      background: rgb(32 32 32 / 78%);
+      transform: translate(-50%, -50%);
+      box-shadow: 0 10px 26px rgb(0 0 0 / 30%);
+    }
+
+    .play-badge svg { width: 42%; margin-left: 6%; fill: white; }
+
+    .project-facts,
+    .reveal-list,
+    .repo-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .project-facts {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .project-facts li {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: start;
+      gap: 0.85rem;
+      font-size: clamp(17px, 1.25vw, 25px);
+      font-weight: 650;
+      line-height: 1.32;
+    }
+
+    .project-facts li::before {
+      content: "";
+      width: 0.65em;
+      aspect-ratio: 1;
+      margin-top: 0.25em;
+      border-radius: 50%;
+      background: var(--yellow);
+      border: 2px solid var(--ink);
+    }
+
+    /* Good, bad, and repository */
+    .explain-slide {
+      grid-template-columns: 0.92fr 1fr;
+      align-items: center;
+      gap: 5%;
+    }
+
+    .explain-intro .lede {
+      max-width: 26ch;
+      margin: 1.4rem 0 0;
+    }
+
+    .reveal-list,
+    .repo-list {
+      display: grid;
+      gap: clamp(13px, 1.35vw, 25px);
+    }
+
+    .reveal-list li,
+    .repo-list li {
+      position: relative;
+      padding: 0 0 clamp(10px, 0.9vw, 18px) 2.4rem;
+      border-bottom: 2px solid var(--line);
+    }
+
+    .reveal-list li::before,
+    .repo-list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.25rem;
+      width: clamp(14px, 1.15vw, 22px);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: var(--yellow);
+      border: 2px solid var(--ink);
+      transition: background 220ms ease-out, box-shadow 220ms ease-out;
+    }
+
+    .good .reveal-list li.revealed::before {
+      background: var(--green);
+      box-shadow: 0 0 0 5px rgb(58 156 104 / 14%);
+    }
+
+    .limits .reveal-list li::before { background: var(--red); }
+
+    .limits .reveal-list li.revealed::before {
+      box-shadow: 0 0 0 5px rgb(220 76 62 / 13%);
+    }
+
+    .item-title {
+      display: block;
+      margin-bottom: 0.16rem;
+      font-size: clamp(22px, 1.65vw, 33px);
+      font-weight: 750;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+    }
+
+    .item-detail {
+      display: block;
+      color: var(--muted);
+      font-size: clamp(15px, 1.05vw, 21px);
+      line-height: 1.3;
+    }
+
+    .repo-list li { padding-left: 3rem; }
+
+    .repo-list li::before {
+      content: attr(data-order);
+      top: -0.08rem;
+      width: 2rem;
+      height: 2rem;
+      display: grid;
+      place-items: center;
+      border-radius: 6px;
+      background: var(--code);
+      color: var(--ink);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: clamp(12px, 0.8vw, 16px);
+      font-weight: 750;
+      box-shadow: none;
+    }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-weight: 700;
+    }
+
+    /* Setup overview */
+    .setup-overview {
+      grid-template-rows: auto 1fr;
+      text-align: center;
+    }
+
+    .setup-overview h2 code { font-size: 0.88em; }
+
+    .setup-columns {
+      align-self: center;
+      display: grid;
+      grid-template-columns: 1fr 2px 1fr;
+      align-items: stretch;
+      gap: 5.5%;
+      width: min(100%, 1250px);
+      margin: 0 auto;
+      text-align: left;
+    }
+
+    .setup-divider {
+      background: var(--line);
+      transition: opacity 180ms ease-out;
+    }
+
+    .deck-ready .setup-divider { opacity: 0; }
+    .deck-ready .setup-columns:has(.setup-column.revealed) .setup-divider { opacity: 1; }
+
+    .setup-column h3 {
+      margin-bottom: clamp(16px, 1.5vw, 28px);
+      color: var(--muted);
+      font-size: clamp(20px, 1.45vw, 28px);
+    }
+
+    .setup-list {
+      display: grid;
+      gap: clamp(14px, 1.4vw, 26px);
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .setup-list li {
+      display: grid;
+      grid-template-columns: 1.5rem 1fr;
+      align-items: center;
+      gap: 0.8rem;
+      font-size: clamp(22px, 1.75vw, 35px);
+      font-weight: 750;
+      line-height: 1.15;
+    }
+
+    .setup-list li::before {
+      color: var(--red);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.85em;
       font-weight: 750;
     }
 
-    .repo {
+    .install-list li::before { content: "+"; }
+    .check-list li::before { content: "✓"; color: var(--green); }
+
+    /* Getting started */
+    .getting-started {
+      grid-template-rows: auto auto auto 1fr;
+      text-align: center;
+      padding-top: 2.8%;
+      padding-bottom: 3.6%;
+    }
+
+    .getting-started h2 { font-size: clamp(58px, 5vw, 96px); }
+
+    .repo-link {
       display: flex;
       justify-content: center;
       align-items: center;
@@ -78,38 +394,8 @@
       font-size: clamp(26px, 2.6vw, 52px);
       font-weight: 700;
       letter-spacing: -0.025em;
-      text-decoration: none;
-    }
-
-    .steps {
-      align-self: center;
-      display: grid;
-      gap: clamp(12px, 1.2vw, 22px);
-      width: min(100%, 1180px);
-      margin: 3.1% auto 0;
-      text-align: left;
-    }
-
-    .step-label {
-      display: block;
-      margin-bottom: 0.45%;
-      color: var(--muted);
-      font-size: clamp(14px, 1vw, 20px);
-      font-weight: 700;
-    }
-
-    pre {
-      margin: 0;
-      padding: clamp(10px, 0.9vw, 17px) clamp(16px, 1.4vw, 26px);
-      border: 2px solid var(--line);
-      border-radius: 8px;
-      background: var(--code);
-      color: var(--ink);
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      font-size: clamp(17px, 1.2vw, 24px);
-      font-weight: 650;
-      line-height: 1.35;
-      white-space: pre-wrap;
+      text-decoration: underline;
+      text-underline-offset: 0.1em;
     }
 
     .requirements {
@@ -161,6 +447,37 @@
       font-weight: 500;
     }
 
+    .steps {
+      align-self: center;
+      display: grid;
+      gap: clamp(12px, 1.2vw, 22px);
+      width: min(100%, 1180px);
+      margin: 3.1% auto 0;
+      text-align: left;
+    }
+
+    .step-label {
+      display: block;
+      margin-bottom: 0.45%;
+      color: var(--muted);
+      font-size: clamp(14px, 1vw, 20px);
+      font-weight: 700;
+    }
+
+    pre {
+      margin: 0;
+      padding: clamp(10px, 0.9vw, 17px) clamp(16px, 1.4vw, 26px);
+      border: 2px solid var(--line);
+      border-radius: 8px;
+      background: var(--code);
+      color: var(--ink);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: clamp(17px, 1.2vw, 24px);
+      font-weight: 650;
+      line-height: 1.35;
+      white-space: pre-wrap;
+    }
+
     .icon-stroke {
       fill: none;
       stroke: var(--ink);
@@ -169,78 +486,407 @@
       stroke-linejoin: round;
     }
 
+    /* Motion and controls */
+    .deck-ready .slide { display: none; }
+    .deck-ready .slide.active { display: grid; }
+
+    .deck-ready .fragment {
+      opacity: 0;
+      clip-path: inset(0 100% 0 0);
+      transform: translateX(-10px);
+    }
+
+    .deck-ready .fragment.revealed {
+      opacity: 1;
+      clip-path: inset(0 0 0 0);
+      transform: translateX(0);
+      transition:
+        clip-path 420ms var(--ease),
+        transform 420ms var(--ease),
+        opacity 120ms ease-out;
+    }
+
+    .controls {
+      position: fixed;
+      right: max(14px, calc((100vw - min(100vw, 177.777vh)) / 2 + 18px));
+      bottom: 14px;
+      z-index: 20;
+      display: flex;
+      gap: 8px;
+    }
+
+    .controls button {
+      width: 42px;
+      height: 42px;
+      border: 1px solid rgb(255 255 255 / 35%);
+      border-radius: 50%;
+      background: rgb(32 32 32 / 84%);
+      color: white;
+      cursor: pointer;
+      font-size: 22px;
+      line-height: 1;
+      backdrop-filter: blur(8px);
+    }
+
+    .controls button:hover { background: var(--red); }
+    .controls button:focus-visible { outline: 3px solid var(--yellow); outline-offset: 2px; }
+    .controls button:disabled { opacity: 0.3; cursor: default; }
+    .export-mode .controls,
+    .review-mode .controls { display: none; }
+
+    html.review-mode,
+    html.review-mode body {
+      height: auto;
+      overflow: auto;
+      background: #202020;
+    }
+
+    .review-mode .deck {
+      width: 100%;
+      height: auto;
+      aspect-ratio: auto;
+      overflow: visible;
+      background: #202020;
+      box-shadow: none;
+    }
+
+    .review-mode .slide,
+    .review-mode .slide:first-of-type,
+    .review-mode .slide.active {
+      position: relative;
+      display: grid;
+      width: min(94vw, 1600px);
+      height: auto;
+      aspect-ratio: 16 / 9;
+      margin: 3vw auto;
+      box-shadow: 0 22px 70px rgb(0 0 0 / 35%);
+      animation: none;
+    }
+
+    .review-mode .fragment {
+      opacity: 1;
+      clip-path: none;
+      transform: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .deck-ready .slide.active { animation: none; }
+      .deck-ready .fragment.revealed { transition: none; }
+    }
+
     @page { size: 13.333in 7.5in; margin: 0; }
 
     @media print {
-      html, body, .slide { width: 13.333in; height: 7.5in; }
+      html, body {
+        width: 13.333in;
+        height: auto;
+        overflow: visible;
+        background: white;
+      }
+
+      .deck {
+        width: 13.333in;
+        height: auto;
+        margin: 0;
+        overflow: visible;
+        box-shadow: none;
+      }
+
+      .slide,
+      .slide:first-of-type,
+      .slide.active {
+        position: relative;
+        display: grid !important;
+        width: 13.333in;
+        height: 7.5in;
+        break-after: page;
+        page-break-after: always;
+        animation: none !important;
+      }
+
+      .slide:last-of-type { break-after: auto; page-break-after: auto; }
+      .fragment { opacity: 1 !important; clip-path: none !important; transform: none !important; }
+      .setup-divider { opacity: 1 !important; }
+      .controls { display: none !important; }
     }
   </style>
 </head>
 <body>
-  <main class="slide" aria-label="Getting started with the CYD workshop">
-    <header>
-      <p class="kicker">Doist Connect · Denmark 2026</p>
-      <h1>Fun with Hardware</h1>
-    </header>
-
-    <a class="repo" href="https://github.com/JefCurtis/cyd">
-      <svg class="github-mark" viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M12 .7a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2.24c-3.22.7-3.9-1.37-3.9-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.71.08-.71 1.17.08 1.78 1.2 1.78 1.2 1.04 1.77 2.72 1.26 3.38.96.1-.75.4-1.26.74-1.55-2.57-.29-5.27-1.28-5.27-5.68 0-1.26.45-2.28 1.19-3.08-.12-.29-.52-1.46.11-3.04 0 0 .97-.31 3.16 1.18A10.98 10.98 0 0 1 12 6.13c.98 0 1.95.13 2.87.39 2.19-1.49 3.16-1.18 3.16-1.18.63 1.58.23 2.75.11 3.04.74.8 1.19 1.82 1.19 3.08 0 4.42-2.71 5.38-5.29 5.67.42.36.79 1.06.79 2.14v3.28c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .7Z"/>
-      </svg>
-      <span class="url">github.com/JefCurtis/cyd</span>
-    </a>
-
-    <section class="requirements" aria-label="Workshop requirements">
-      <p class="requirements-title">Bring these three things</p>
-      <div class="requirement-row">
-        <div class="requirement">
-          <svg viewBox="0 0 64 64" aria-hidden="true">
-            <rect class="icon-stroke" x="11" y="10" width="42" height="31" rx="3"/>
-            <path class="icon-stroke" d="M5 49h54l-4 6H9l-4-6Z"/>
-            <path class="icon-stroke" d="M27 49h10"/>
-          </svg>
-          <span>Laptop</span>
+  <main class="deck" aria-label="Fun with Hardware workshop presentation">
+    <section class="slide welcome active" data-slide="1" aria-label="Welcome">
+      <div class="welcome-content">
+        <div>
+          <p class="slide-kicker">Doist Connect · Denmark 2026</p>
+          <h1>Fun with Hardware</h1>
         </div>
-        <div class="plus">+</div>
-        <div class="requirement">
-          <svg viewBox="0 0 64 64" aria-hidden="true">
-            <path class="icon-stroke" d="M14 15v13c0 7 5 12 12 12h12c7 0 12 5 12 12v2"/>
-            <rect class="icon-stroke" x="8" y="7" width="12" height="10" rx="2"/>
-            <path class="icon-stroke" d="M11 7V3m6 4V3"/>
-            <rect class="icon-stroke" x="44" y="50" width="12" height="10" rx="2"/>
-            <path class="icon-stroke" d="M47 60v3m6-3v3"/>
-          </svg>
-          <span>USB data cable</span>
-        </div>
-        <div class="plus">+</div>
-        <div class="requirement">
-          <svg viewBox="0 0 64 64" aria-hidden="true">
-            <rect x="5" y="5" width="54" height="48" rx="5" fill="var(--yellow)" stroke="var(--ink)" stroke-width="2"/>
-            <rect x="10" y="10" width="44" height="32" rx="2" fill="#202020"/>
-            <circle cx="15" cy="48" r="2.5" fill="var(--red)"/>
-            <circle cx="23" cy="48" r="2.5" fill="#3a9c68"/>
-            <rect x="43" y="46" width="10" height="4" rx="1" fill="var(--ink)"/>
-            <path d="M29 57h6" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          <span>CYD device</span>
-        </div>
+        <svg class="device-mark" viewBox="0 0 320 235" role="img" aria-label="Cheap Yellow Display">
+          <rect x="14" y="14" width="292" height="200" rx="18" fill="var(--yellow)" stroke="var(--ink)" stroke-width="7"/>
+          <rect x="36" y="34" width="248" height="142" rx="7" fill="var(--ink)"/>
+          <circle cx="52" cy="195" r="8" fill="var(--red)" stroke="var(--ink)" stroke-width="4"/>
+          <circle cx="78" cy="195" r="8" fill="var(--green)" stroke="var(--ink)" stroke-width="4"/>
+          <rect x="240" y="187" width="40" height="13" rx="3" fill="var(--ink)"/>
+          <path d="M145 225h30" stroke="var(--ink)" stroke-width="7" stroke-linecap="round"/>
+          <circle cx="160" cy="105" r="34" fill="var(--red)"/>
+          <circle cx="160" cy="105" r="20" fill="none" stroke="white" stroke-width="6"/>
+          <circle cx="160" cy="105" r="6" fill="white"/>
+        </svg>
+        <p class="lede">From idea to working device.</p>
       </div>
+      <span class="slide-index">1 / 7</span>
     </section>
 
-    <section class="steps" aria-label="Setup commands">
-      <div>
-        <span class="step-label">1 · Clone in Terminal</span>
-        <pre>git clone https://github.com/JefCurtis/cyd.git</pre>
+    <section class="slide chorequest" data-slide="2" aria-label="ChoreQuest project">
+      <div class="media-layout">
+        <a class="thumbnail-link" href="https://www.youtube.com/watch?v=kBPSlSYZXRc" aria-label="Watch the ChoreQuest video">
+          <img src="assets/chorequest-thumbnail.jpg" alt="ChoreQuest touchscreen chore tracker held in front of Todoist on a phone">
+          <span class="play-badge" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </span>
+        </a>
+        <div class="project-copy">
+          <ul class="project-facts">
+            <li class="fragment">Recurring chores come from Todoist.</li>
+            <li class="fragment">Kids tap tasks complete on the CYD.</li>
+            <li class="fragment">Finishing the list reveals a daily reward.</li>
+          </ul>
+        </div>
       </div>
-      <div>
-        <span class="step-label">2 · Enter the project folder</span>
-        <pre>cd cyd</pre>
+      <span class="slide-index">2 / 7</span>
+    </section>
+
+    <section class="slide explain-slide good" data-slide="3" aria-label="What is CYD good at">
+      <div class="explain-intro">
+        <p class="slide-kicker">Tiny but capable</p>
+        <h2>What is CYD good at?</h2>
       </div>
-      <div>
-        <span class="step-label">3 · Open the folder in your AI agent, then run</span>
-        <pre>/cyd-init</pre>
+      <ul class="reveal-list">
+        <li class="fragment"><span class="item-title">Focused touch interfaces</span></li>
+        <li class="fragment"><span class="item-title">Games, timers, and dashboards</span></li>
+        <li class="fragment"><span class="item-title">WiFi and Bluetooth projects</span></li>
+        <li class="fragment"><span class="item-title">LEDs, sensors, and sound</span></li>
+        <li class="fragment"><span class="item-title">Remember settings and high scores</span></li>
+      </ul>
+      <span class="slide-index">3 / 7</span>
+    </section>
+
+    <section class="slide explain-slide limits" data-slide="4" aria-label="What is CYD bad at">
+      <div class="explain-intro">
+        <p class="slide-kicker">Know the edges</p>
+        <h2>What is CYD bad at?</h2>
       </div>
+      <ul class="reveal-list">
+        <li class="fragment"><span class="item-title">Small screen: 320 × 240 pixels</span></li>
+        <li class="fragment"><span class="item-title">Limited memory: about 320 KB RAM</span></li>
+        <li class="fragment"><span class="item-title">No GPU</span></li>
+        <li class="fragment"><span class="item-title">Resistive touchscreen</span></li>
+        <li class="fragment"><span class="item-title">Single touch only</span></li>
+      </ul>
+      <span class="slide-index">4 / 7</span>
+    </section>
+
+    <section class="slide explain-slide repository" data-slide="5" aria-label="What is in the repository">
+      <div class="explain-intro">
+        <p class="slide-kicker">Your workshop toolkit</p>
+        <h2>What’s in the repo</h2>
+      </div>
+      <ul class="repo-list">
+        <li class="fragment" data-order="01"><span class="item-title"><code>/cyd-init</code> setup skill</span></li>
+        <li class="fragment" data-order="02"><span class="item-title"><code>cyd-development</code> skill</span></li>
+        <li class="fragment" data-order="03"><span class="item-title">Tap Quest starter</span></li>
+        <li class="fragment" data-order="04"><span class="item-title">Open APIs</span></li>
+        <li class="fragment" data-order="05"><span class="item-title">Inspiration projects</span></li>
+      </ul>
+      <span class="slide-index">5 / 7</span>
+    </section>
+
+    <section class="slide setup-overview" data-slide="6" aria-label="What the CYD setup skill does">
+      <header>
+        <p class="slide-kicker">Workshop setup</p>
+        <h2><code>/cyd-init</code></h2>
+      </header>
+      <div class="setup-columns">
+        <section class="setup-column fragment" aria-label="Installed if missing">
+          <h3>Installs if missing</h3>
+          <ul class="setup-list install-list">
+            <li>Git</li>
+            <li>Python 3</li>
+            <li>PlatformIO</li>
+            <li>ESP32 tools + libraries</li>
+          </ul>
+        </section>
+        <div class="setup-divider" aria-hidden="true"></div>
+        <section class="setup-column fragment" aria-label="What setup checks">
+          <h3>Looks for</h3>
+          <ul class="setup-list check-list">
+            <li>Connected CYD</li>
+            <li>ESP32 with 4 MB flash</li>
+            <li>Working screen</li>
+            <li>Working touch</li>
+          </ul>
+        </section>
+      </div>
+      <span class="slide-index">6 / 7</span>
+    </section>
+
+    <section class="slide getting-started" data-slide="7" aria-label="Getting started">
+      <header>
+        <p class="slide-kicker">Doist Connect · Denmark 2026</p>
+        <h2>Fun with Hardware</h2>
+      </header>
+
+      <a class="repo-link" href="https://github.com/JefCurtis/cyd">
+        <svg class="github-mark" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 .7a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2.24c-3.22.7-3.9-1.37-3.9-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.71.08-.71 1.17.08 1.78 1.2 1.78 1.2 1.04 1.77 2.72 1.26 3.38.96.1-.75.4-1.26.74-1.55-2.57-.29-5.27-1.28-5.27-5.68 0-1.26.45-2.28 1.19-3.08-.12-.29-.52-1.46.11-3.04 0 0 .97-.31 3.16 1.18A10.98 10.98 0 0 1 12 6.13c.98 0 1.95.13 2.87.39 2.19-1.49 3.16-1.18 3.16-1.18.63 1.58.23 2.75.11 3.04.74.8 1.19 1.82 1.19 3.08 0 4.42-2.71 5.38-5.29 5.67.42.36.79 1.06.79 2.14v3.28c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .7Z"/>
+        </svg>
+        <span class="url">github.com/JefCurtis/cyd</span>
+      </a>
+
+      <section class="requirements" aria-label="Workshop requirements">
+        <p class="requirements-title">Bring these three things</p>
+        <div class="requirement-row">
+          <div class="requirement">
+            <svg viewBox="0 0 64 64" aria-hidden="true">
+              <rect class="icon-stroke" x="11" y="10" width="42" height="31" rx="3"/>
+              <path class="icon-stroke" d="M5 49h54l-4 6H9l-4-6Z"/>
+              <path class="icon-stroke" d="M27 49h10"/>
+            </svg>
+            <span>Laptop</span>
+          </div>
+          <div class="plus">+</div>
+          <div class="requirement">
+            <svg viewBox="0 0 64 64" aria-hidden="true">
+              <path class="icon-stroke" d="M14 15v13c0 7 5 12 12 12h12c7 0 12 5 12 12v2"/>
+              <rect class="icon-stroke" x="8" y="7" width="12" height="10" rx="2"/>
+              <path class="icon-stroke" d="M11 7V3m6 4V3"/>
+              <rect class="icon-stroke" x="44" y="50" width="12" height="10" rx="2"/>
+              <path class="icon-stroke" d="M47 60v3m6-3v3"/>
+            </svg>
+            <span>USB data cable</span>
+          </div>
+          <div class="plus">+</div>
+          <div class="requirement">
+            <svg viewBox="0 0 64 64" aria-hidden="true">
+              <rect x="5" y="5" width="54" height="48" rx="5" fill="var(--yellow)" stroke="var(--ink)" stroke-width="2"/>
+              <rect x="10" y="10" width="44" height="32" rx="2" fill="var(--ink)"/>
+              <circle cx="15" cy="48" r="2.5" fill="var(--red)"/>
+              <circle cx="23" cy="48" r="2.5" fill="var(--green)"/>
+              <rect x="43" y="46" width="10" height="4" rx="1" fill="var(--ink)"/>
+              <path d="M29 57h6" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span>CYD device</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="steps" aria-label="Setup commands">
+        <div>
+          <span class="step-label">1 · Clone in Terminal</span>
+          <pre>git clone https://github.com/JefCurtis/cyd.git</pre>
+        </div>
+        <div>
+          <span class="step-label">2 · Enter the project folder</span>
+          <pre>cd cyd</pre>
+        </div>
+        <div>
+          <span class="step-label">3 · Open the folder in your AI agent, then run</span>
+          <pre>/cyd-init</pre>
+        </div>
+      </section>
+      <span class="slide-index">7 / 7</span>
     </section>
   </main>
+
+  <nav class="controls" aria-label="Slide controls">
+    <button id="previous" type="button" aria-label="Previous step">←</button>
+    <button id="next" type="button" aria-label="Next step">→</button>
+  </nav>
+
+  <script>
+    (() => {
+      const deck = document.querySelector('.deck');
+      const slides = [...document.querySelectorAll('.slide')];
+      const params = new URLSearchParams(location.search);
+      const exportMode = params.has('export');
+      const reviewMode = params.has('review');
+      if (exportMode) document.documentElement.classList.add('export-mode');
+      if (reviewMode) {
+        document.documentElement.classList.add('review-mode');
+        slides.forEach((slide) => slide.setAttribute('aria-hidden', 'false'));
+        document.querySelectorAll('.fragment').forEach((item) => item.classList.add('revealed'));
+        return;
+      }
+      const previous = document.querySelector('#previous');
+      const next = document.querySelector('#next');
+      const hashSlide = Number.parseInt(location.hash.slice(1), 10);
+      let current = Number.isFinite(hashSlide)
+        ? Math.min(Math.max(hashSlide - 1, 0), slides.length - 1)
+        : 0;
+
+      function fragmentsFor(index) {
+        return [...slides[index].querySelectorAll('.fragment')];
+      }
+
+      function updateControls() {
+        const visible = fragmentsFor(current).filter((item) => item.classList.contains('revealed'));
+        previous.disabled = current === 0 && visible.length === 0;
+        next.disabled = current === slides.length - 1 && visible.length === fragmentsFor(current).length;
+      }
+
+      function showSlide(index, revealAll = false) {
+        current = Math.min(Math.max(index, 0), slides.length - 1);
+        slides.forEach((slide, slideIndex) => {
+          slide.classList.toggle('active', slideIndex === current);
+          slide.setAttribute('aria-hidden', slideIndex === current ? 'false' : 'true');
+        });
+        fragmentsFor(current).forEach((item) => item.classList.toggle('revealed', revealAll));
+        history.replaceState(null, '', `#${current + 1}`);
+        updateControls();
+      }
+
+      function advance() {
+        const hidden = fragmentsFor(current).find((item) => !item.classList.contains('revealed'));
+        if (hidden) {
+          hidden.classList.add('revealed');
+          updateControls();
+          return;
+        }
+        if (current < slides.length - 1) showSlide(current + 1);
+      }
+
+      function retreat() {
+        const visible = fragmentsFor(current).filter((item) => item.classList.contains('revealed'));
+        if (visible.length) {
+          visible.at(-1).classList.remove('revealed');
+          updateControls();
+          return;
+        }
+        if (current > 0) showSlide(current - 1, true);
+      }
+
+      document.documentElement.classList.add('deck-ready');
+      showSlide(current, exportMode);
+
+      next.addEventListener('click', (event) => { event.stopPropagation(); advance(); });
+      previous.addEventListener('click', (event) => { event.stopPropagation(); retreat(); });
+
+      deck.addEventListener('click', (event) => {
+        if (event.target.closest('a, button')) return;
+        advance();
+      });
+
+      window.addEventListener('keydown', (event) => {
+        if (['ArrowRight', 'PageDown', ' ', 'Enter'].includes(event.key)) {
+          event.preventDefault();
+          advance();
+        }
+        if (['ArrowLeft', 'PageUp', 'Backspace'].includes(event.key)) {
+          event.preventDefault();
+          retreat();
+        }
+        if (event.key === 'Home') showSlide(0);
+        if (event.key === 'End') showSlide(slides.length - 1, true);
+      });
+    })();
+  </script>
 </body>
 </html>
